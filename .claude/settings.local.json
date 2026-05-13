@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"D:\\\\Documents\\\\Base de Dados\\\\ISE 2\\\\Sotera\\\\frontend\" -Recurse -File)",
+      "Bash(Select-Object FullName)",
+      "Bash(Sort-Object FullName)",
+      "Bash(xargs wc -l)",
+      "Bash(python -c \"from app import create_app; from app.extensions import db; from app.models.type_mesure import TypeMesure; app = create_app\\(\\); ctx = app.app_context\\(\\); ctx.push\\(\\); count = TypeMesure.query.count\\(\\); print\\(f'types_mesure count: {count}'\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(python download_illustrations.py)",
+      "Bash(python -c ')",
+      "Bash(python gen_illustrations.py)",
+      "Bash(git init *)",
+      "Bash(git config *)",
+      "Bash(git add *)"
+    ]
+  }
+}
