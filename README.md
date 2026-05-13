@@ -28,9 +28,9 @@ Application web médicale permettant aux patients de suivre leurs indicateurs de
 
 Depuis **pgAdmin** ou **psql** :
 ```sql
-CREATE DATABASE sotera_db;
+CREATE DATABASE Sotera_app;
 CREATE USER sotera WITH PASSWORD 'sotera';
-GRANT ALL PRIVILEGES ON DATABASE sotera_db TO sotera;
+GRANT ALL PRIVILEGES ON DATABASE Sotera_app TO sotera;
 ```
 
 Puis appliquer le schéma SQL :
