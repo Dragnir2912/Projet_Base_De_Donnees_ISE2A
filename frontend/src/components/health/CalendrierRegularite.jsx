@@ -1,4 +1,4 @@
-/**
+﻿/**
  * CalendrierRegularite — vue mensuelle de la régularité des mesures.
  *
  * Props:
@@ -12,19 +12,19 @@ import { fr } from 'date-fns/locale'
 
 const JOURS_SEMAINE = ['L', 'M', 'M', 'J', 'V', 'S', 'D']
 
-/* Couleur selon le nombre de mesures */
+/* Heatmap basée sur la palette accent (teal émeraude) */
 function dayColor(count) {
-  if (!count) return null  // transparent = background natif
-  if (count === 1) return 'rgba(52,199,89,0.30)'
-  if (count === 2) return 'rgba(52,199,89,0.55)'
-  if (count === 3) return 'rgba(52,199,89,0.78)'
-  return '#34C759'
+  if (!count) return null
+  if (count === 1) return 'rgba(0,221,160,0.20)'
+  if (count === 2) return 'rgba(0,221,160,0.46)'
+  if (count === 3) return 'rgba(0,221,160,0.72)'
+  return 'var(--accent)'
 }
 
 function dayTextColor(count) {
-  if (!count) return 'var(--text-tertiary)'
-  if (count >= 3) return 'white'
-  return '#1a6634'
+  if (!count) return 'var(--ink-3)'
+  if (count >= 3) return '#051A12'
+  return 'var(--accent)'
 }
 
 export default function CalendrierRegularite({ data, compact = false, onDayClick }) {
@@ -35,40 +35,38 @@ export default function CalendrierRegularite({ data, compact = false, onDayClick
   const { mois, nb_jours, premier_jour_semaine, jours, streak, actifs } = data
   const today       = new Date().toISOString().slice(0, 10)
   const moisActuel  = new Date().toISOString().slice(0, 7)
-  // Jours écoulés : jour actuel pour le mois courant, total pour les mois passés
-  const joursEcoules = mois === moisActuel
-    ? new Date().getDate()
-    : nb_jours
+  const joursEcoules = mois === moisActuel ? new Date().getDate() : nb_jours
   const pctRegularite = Math.min(Math.round((actifs / joursEcoules) * 100), 100)
 
-  // Construire le tableau de jours (avec padding pour début du mois)
-  // premier_jour_semaine : 0=lundi … 6=dimanche (convention Python calendar)
-  const offset = premier_jour_semaine  // cases vides au début
-  const cells = []
+  /* Grille jours */
+  const offset = premier_jour_semaine
+  const cells  = []
   for (let i = 0; i < offset; i++) cells.push(null)
   for (let d = 1; d <= nb_jours; d++) {
     const dateStr = `${mois}-${String(d).padStart(2, '0')}`
     cells.push({ d, dateStr, data: jours[dateStr] })
   }
-  // Compléter pour avoir un multiple de 7
   while (cells.length % 7 !== 0) cells.push(null)
 
   const monthLabel = format(parseISO(`${mois}-01`), 'MMMM yyyy', { locale: fr })
   const monthCap   = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1)
 
+  /* ── VERSION COMPACTE (dashboard widget) ── */
   if (compact) {
-    /* ── VERSION MINIATURE (dashboard) ── */
     const cellSize = 22
     const gap      = 3
 
     return (
       <div>
         {/* Jours de la semaine */}
-        <div className="flex gap-[3px] mb-1">
+        <div style={{ display: 'flex', gap, marginBottom: 4 }}>
           {JOURS_SEMAINE.map((j, i) => (
-            <div key={i}
-              className="flex items-center justify-center text-[9px] font-bold"
-              style={{ width: cellSize, color: 'var(--text-tertiary)', flexShrink: 0 }}>
+            <div key={i} style={{
+              width: cellSize, textAlign: 'center',
+              fontSize: 9, fontWeight: 700,
+              color: 'var(--ink-3)', flexShrink: 0,
+              fontFamily: 'Poppins, system-ui',
+            }}>
               {j}
             </div>
           ))}
@@ -87,22 +85,33 @@ export default function CalendrierRegularite({ data, compact = false, onDayClick
                 title={cell.data ? `${count} mesure${count > 1 ? 's' : ''}` : 'Aucune mesure'}
                 onClick={() => onDayClick?.(cell.dateStr)}
                 style={{
-                  width:        cellSize,
-                  height:       cellSize,
-                  borderRadius: 5,
-                  background:   bg ?? 'var(--bg-tertiary)',
-                  border:       isToday ? '2px solid var(--health-blue)' : '2px solid transparent',
-                  cursor:       onDayClick ? 'pointer' : 'default',
-                  display:      'flex',
-                  alignItems:   'center',
-                  justifyContent: 'center',
-                  fontSize:     9,
-                  fontWeight:   isToday ? 800 : 600,
-                  color:        dayTextColor(count),
-                  transition:   'transform 0.15s ease',
+                  width:            cellSize,
+                  height:           cellSize,
+                  borderRadius:     5,
+                  background:       bg ?? 'var(--surface-2)',
+                  border:           isToday ? '2px solid var(--accent)' : '2px solid transparent',
+                  cursor:           onDayClick ? 'pointer' : 'default',
+                  display:          'flex',
+                  alignItems:       'center',
+                  justifyContent:   'center',
+                  fontSize:         9,
+                  fontWeight:       isToday ? 800 : 600,
+                  color:            dayTextColor(count),
+                  transition:       'transform 0.15s ease, box-shadow 0.15s ease',
+                  boxShadow:        count > 0 ? `0 0 6px rgba(0,221,160,${count * 0.07})` : 'none',
+                  fontFamily:       'Poppins, system-ui',
+                  fontVariantNumeric: 'tabular-nums',
                 }}
-                onMouseEnter={e => { if (onDayClick) e.currentTarget.style.transform = 'scale(1.2)' }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }}
+                onMouseEnter={e => {
+                  if (onDayClick) {
+                    e.currentTarget.style.transform = 'scale(1.22)'
+                    e.currentTarget.style.boxShadow = `0 0 10px rgba(0,221,160,0.30)`
+                  }
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'scale(1)'
+                  e.currentTarget.style.boxShadow = count > 0 ? `0 0 6px rgba(0,221,160,${count * 0.07})` : 'none'
+                }}
               >
                 {cell.d}
               </div>
@@ -114,115 +123,171 @@ export default function CalendrierRegularite({ data, compact = false, onDayClick
   }
 
   /* ── VERSION COMPLÈTE ── */
+  const stats = [
+    { label: 'Jours actifs',   value: actifs,           color: 'var(--accent)', sub: `sur ${joursEcoules} j écoulés` },
+    { label: 'Série actuelle', value: streak,            color: '#9B77F5',        sub: streak > 0 ? `jour${streak > 1 ? 's' : ''} consécutifs` : 'À améliorer !' },
+    { label: 'Régularité',     value: `${pctRegularite}%`, color: '#00D97E',    sub: pctRegularite === 100 ? 'Parfait !' : pctRegularite >= 70 ? 'Très bien' : 'À améliorer' },
+  ]
+
   return (
-    <div className="space-y-4">
-      {/* En-tête stats */}
-      <div className="grid grid-cols-3 gap-3">
-        {[
-          { label: 'Jours actifs', value: actifs, color: '#34C759', sub: `sur ${joursEcoules} j écoulés` },
-          { label: 'Série actuelle', value: streak, color: '#0A84FF', sub: streak > 0 ? `jour${streak > 1 ? 's' : ''} consécutifs` : 'À améliorer !' },
-          { label: 'Régularité', value: `${pctRegularite}%`, color: '#BF5AF2', sub: pctRegularite === 100 ? 'Parfait !' : pctRegularite >= 70 ? 'Très bien' : 'À améliorer' },
-        ].map((s, i) => (
-          <div key={i} className="rounded-2xl p-4 text-center"
-            style={{ background: 'var(--bg-card)', boxShadow: 'var(--shadow-card)', borderTop: `3px solid ${s.color}` }}>
-            <p className="text-2xl font-bold tabular-nums" style={{ color: s.color, letterSpacing: '-1px' }}>{s.value}</p>
-            <p className="text-xs font-bold mt-0.5" style={{ color: 'var(--text-primary)' }}>{s.label}</p>
-            <p className="text-[10px] mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{s.sub}</p>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+      {/* Stats — glass cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+        {stats.map((s, i) => (
+          <div key={i} style={{
+            borderRadius: 20,
+            padding: '16px 18px',
+            textAlign: 'center',
+            background: 'var(--glass-card)',
+            backdropFilter: 'blur(24px) saturate(1.8)',
+            WebkitBackdropFilter: 'blur(24px) saturate(1.8)',
+            border: '1px solid var(--glass-border)',
+            borderTop: `3px solid ${s.color}`,
+            transition: 'transform 0.2s ease',
+          }}>
+            <p style={{
+              fontSize: 26, fontWeight: 800, letterSpacing: '-1.5px',
+              color: s.color, margin: 0, lineHeight: 1,
+              fontVariantNumeric: 'tabular-nums',
+              fontFamily: 'Poppins, system-ui',
+            }}>
+              {s.value}
+            </p>
+            <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--ink-1)', margin: '5px 0 2px', letterSpacing: '-0.2px' }}>
+              {s.label}
+            </p>
+            <p style={{ fontSize: 10, color: 'var(--ink-3)', margin: 0 }}>{s.sub}</p>
           </div>
         ))}
       </div>
 
       {/* Légende */}
-      <div className="flex items-center gap-3 justify-end">
-        <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Moins</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-end' }}>
+        <span style={{ fontSize: 10, color: 'var(--ink-3)' }}>Moins</span>
         {[null, 1, 2, 3, 4].map((n, i) => (
           <div key={i} style={{
-            width: 16, height: 16, borderRadius: 4,
-            background: n === null ? 'var(--bg-tertiary)' : dayColor(n),
+            width: 14, height: 14, borderRadius: 4,
+            background: n === null ? 'var(--surface-2)' : dayColor(n) ?? 'var(--accent)',
           }} />
         ))}
-        <span className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Plus</span>
+        <span style={{ fontSize: 10, color: 'var(--ink-3)' }}>Plus</span>
       </div>
 
       {/* Calendrier */}
-      <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--bg-card)', boxShadow: 'var(--shadow-card)' }}>
+      <div style={{
+        borderRadius: 20, overflow: 'hidden',
+        background: 'var(--glass-card)',
+        backdropFilter: 'blur(24px) saturate(1.8)',
+        WebkitBackdropFilter: 'blur(24px) saturate(1.8)',
+        border: '1px solid var(--glass-border)',
+      }}>
         {/* En-tête jours */}
-        <div className="grid grid-cols-7 px-4 pt-4 pb-2">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', padding: '16px 16px 8px' }}>
           {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(j => (
-            <div key={j} className="text-center text-[11px] font-bold uppercase tracking-widest"
-              style={{ color: 'var(--text-tertiary)' }}>
+            <div key={j} style={{
+              textAlign: 'center',
+              fontSize: 10, fontWeight: 700,
+              textTransform: 'uppercase', letterSpacing: '0.6px',
+              color: 'var(--ink-3)',
+              fontFamily: 'Poppins, system-ui',
+            }}>
               {j}
             </div>
           ))}
         </div>
 
         {/* Grille */}
-        <div className="grid grid-cols-7 gap-1.5 px-4 pb-4">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 6, padding: '0 16px 16px' }}>
           {cells.map((cell, i) => {
-            if (!cell) return <div key={i} className="aspect-square" />
+            if (!cell) return <div key={i} style={{ aspectRatio: '1' }} />
             const isToday   = cell.dateStr === today
             const isFuture  = cell.dateStr > today
             const count     = cell.data?.count ?? 0
             const isHovered = hovered === cell.dateStr
-            const bg        = isFuture ? 'transparent' : (dayColor(count) ?? 'var(--bg-secondary)')
+            const bg        = isFuture ? 'transparent' : (dayColor(count) ?? 'var(--surface-2)')
 
             return (
               <div key={i}
-                className="aspect-square flex flex-col items-center justify-center rounded-xl cursor-pointer transition-all relative"
                 style={{
-                  background: isHovered && !isFuture ? (bg === 'var(--bg-secondary)' ? 'var(--bg-tertiary)' : bg) : bg,
-                  border:     isToday ? '2px solid var(--health-blue)' : '2px solid transparent',
-                  opacity:    isFuture ? 0.3 : 1,
-                  transform:  isHovered && !isFuture ? 'scale(1.08)' : 'scale(1)',
-                  boxShadow:  isHovered && count > 0 ? '0 4px 12px rgba(52,199,89,0.3)' : 'none',
+                  aspectRatio: '1',
+                  display: 'flex', flexDirection: 'column',
+                  alignItems: 'center', justifyContent: 'center',
+                  borderRadius: 12, cursor: onDayClick ? 'pointer' : 'default',
+                  position: 'relative',
+                  background: isHovered && !isFuture
+                    ? (bg === 'var(--surface-2)' ? 'var(--surface-3)' : bg)
+                    : bg,
+                  border: isToday ? '2px solid var(--accent)' : '2px solid transparent',
+                  opacity: isFuture ? 0.25 : 1,
+                  transform: isHovered && !isFuture ? 'scale(1.10)' : 'scale(1)',
+                  boxShadow: isHovered && count > 0
+                    ? '0 4px 14px rgba(0,221,160,0.28)'
+                    : count > 0 ? `0 0 8px rgba(0,221,160,${count * 0.06})` : 'none',
+                  transition: 'all 0.18s cubic-bezier(0.34,1.2,0.64,1)',
+                  zIndex: isHovered ? 2 : 1,
                 }}
                 onClick={() => !isFuture && onDayClick?.(cell.dateStr)}
                 onMouseEnter={() => setHovered(cell.dateStr)}
                 onMouseLeave={() => setHovered(null)}
               >
-                <span className="text-xs font-bold tabular-nums"
-                  style={{ color: dayTextColor(count) }}>
+                <span style={{
+                  fontSize: 12, fontWeight: isToday ? 800 : 600,
+                  color: dayTextColor(count),
+                  fontVariantNumeric: 'tabular-nums',
+                  fontFamily: 'Poppins, system-ui',
+                }}>
                   {cell.d}
                 </span>
                 {count > 0 && (
-                  <span className="text-[9px] font-semibold"
-                    style={{ color: count >= 3 ? 'rgba(255,255,255,0.85)' : '#1a6634', lineHeight: 1 }}>
+                  <span style={{
+                    fontSize: 9, fontWeight: 700,
+                    color: count >= 3 ? 'rgba(5,26,18,0.70)' : 'var(--accent)',
+                    lineHeight: 1,
+                  }}>
                     {count}
                   </span>
                 )}
 
-                {/* Tooltip hover */}
+                {/* Tooltip premium */}
                 {isHovered && !isFuture && (
-                  <div
-                    className="absolute z-10 pointer-events-none"
-                    style={{
-                      bottom: 'calc(100% + 8px)',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      background: 'var(--bg-primary)',
-                      border: '1px solid var(--border-subtle)',
-                      borderRadius: 10,
-                      padding: '6px 10px',
-                      whiteSpace: 'nowrap',
-                      boxShadow: 'var(--shadow-elevated)',
-                      minWidth: 120,
-                    }}
-                  >
-                    <p className="text-[11px] font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
+                  <div style={{
+                    position: 'absolute',
+                    bottom: 'calc(100% + 10px)',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'var(--glass-card)',
+                    backdropFilter: 'blur(20px) saturate(1.8)',
+                    WebkitBackdropFilter: 'blur(20px) saturate(1.8)',
+                    border: '1px solid var(--glass-border)',
+                    borderRadius: 12,
+                    padding: '8px 12px',
+                    whiteSpace: 'nowrap',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.28)',
+                    minWidth: 130,
+                    zIndex: 20,
+                    pointerEvents: 'none',
+                    animation: 'fadeIn 0.12s ease',
+                  }}>
+                    <p style={{
+                      fontSize: 10, fontWeight: 700,
+                      textTransform: 'uppercase', letterSpacing: '0.8px',
+                      color: 'var(--ink-3)', margin: '0 0 4px',
+                    }}>
                       {format(parseISO(cell.dateStr), 'd MMMM', { locale: fr })}
                     </p>
                     {count === 0 ? (
-                      <p className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>Aucune mesure</p>
+                      <p style={{ fontSize: 12, color: 'var(--ink-3)', margin: 0 }}>Aucune mesure</p>
                     ) : (
                       <>
-                        <p className="text-[10px] font-semibold" style={{ color: '#34C759' }}>
+                        <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent)', margin: '0 0 4px', letterSpacing: '-0.3px' }}>
                           {count} mesure{count > 1 ? 's' : ''}
                         </p>
                         {cell.data?.types?.slice(0, 3).map(t => (
-                          <p key={t} className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>• {t}</p>
+                          <p key={t} style={{ fontSize: 10, color: 'var(--ink-3)', margin: '1px 0' }}>· {t}</p>
                         ))}
                         {(cell.data?.types?.length ?? 0) > 3 && (
-                          <p className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
+                          <p style={{ fontSize: 10, color: 'var(--ink-3)', margin: '1px 0' }}>
                             +{cell.data.types.length - 3} autre{cell.data.types.length - 3 > 1 ? 's' : ''}
                           </p>
                         )}

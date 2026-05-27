@@ -1,8 +1,8 @@
-import { useEffect, useState, useCallback } from 'react'
+﻿import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   AlertTriangle, CheckCircle2, Users,
-  ChevronRight, RefreshCw, Eye,
+  ChevronRight, RefreshCw, Eye, BellRing,
 } from 'lucide-react'
 import { formatDistanceToNow, format } from 'date-fns'
 import { fr } from 'date-fns/locale'
@@ -12,11 +12,11 @@ import { getAlertesCritiques, marquerVueAlerte, getPatients } from '../../servic
 const NIVEAU_CFG = {
   danger: {
     label:   '🚨 Danger',
-    bg:      'rgba(255,45,85,0.08)',
-    border:  'rgba(255,45,85,0.25)',
-    color:   '#FF2D55',
-    badgeBg: 'rgba(255,45,85,0.12)',
-    icon:    <AlertTriangle size={14} color="#FF2D55" />,
+    bg:      'rgba(255,92,106,0.08)',
+    border:  'rgba(255,92,106,0.25)',
+    color:   '#FF5C6A',
+    badgeBg: 'rgba(255,92,106,0.12)',
+    icon:    <AlertTriangle size={14} color="#FF5C6A" />,
   },
   attention: {
     label:   '⚠️ Attention',
@@ -29,8 +29,8 @@ const NIVEAU_CFG = {
 }
 
 const AVATAR_COLORS = [
-  '#0A84FF','#BF5AF2','#34C759','#FF9500',
-  '#FF2D55','#5AC8FA','#FFD60A','#FF375F',
+  '#2E9B83','#1A7C6C','#34C759','#FF9500',
+  '#FF5C6A','#40B896','#FFD60A','#FF7B73',
 ]
 
 export default function AlertesMedecinPage() {
@@ -111,63 +111,50 @@ export default function AlertesMedecinPage() {
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 page-enter">
 
-      {/* ══ HEADER ══ */}
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)', letterSpacing: '-0.3px' }}>
-            Alertes patients
-          </h1>
-          <p className="text-sm mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
-            Valeurs hors normes consolidées de tous vos patients, triées par urgence
-          </p>
+      {/* ══ HERO BANNER ══ */}
+      <div style={{
+        position: 'relative', borderRadius: 24, overflow: 'hidden',
+        height: 190, background: 'var(--surface-1)', border: '1px solid var(--border-0)',
+      }} className="animate-fade-up">
+        <div style={{ position: 'absolute', right: 0, top: 0, width: '55%', height: '100%' }}>
+          <img src="/illustrations/hero/alertes.jpg" alt="" aria-hidden
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, var(--surface-1) 0%, rgba(242, 247, 245, 0.52) 0%, transparent 100%)' }} />
         </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={load}
-            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
-            style={{ background: 'var(--bg-secondary)', border: 'none', cursor: 'pointer', color: 'var(--text-tertiary)' }}
-            title="Actualiser"
-          >
-            <RefreshCw size={15} />
-          </button>
-          {nonVues > 0 && (
-            <button
-              onClick={handleMarquerToutesVues}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all"
-              style={{ background: 'rgba(10,132,255,0.1)', color: 'var(--health-blue)', border: 'none', cursor: 'pointer' }}
-            >
-              <Eye size={15} /> Tout marquer comme vu
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* ══ STATS RAPIDES ══ */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4" style={{ padding: '6px', margin: '-6px' }}>
-        {[
-          { label: 'Alertes danger',    value: totalDanger,    color: '#FF2D55', bg: 'rgba(255,45,85,0.1)' },
-          { label: 'Alertes attention', value: totalAttention, color: '#FF9500', bg: 'rgba(255,149,0,0.1)' },
-          { label: 'Non vues',          value: nonVues,        color: 'var(--text-primary)', bg: 'var(--bg-secondary)' },
-          { label: 'Patients affectés', value: patientsAffecter, color: 'var(--health-blue)', bg: 'rgba(10,132,255,0.1)' },
-        ].map((s, i) => (
-          <div key={i} className="hover-lift rounded-2xl p-4"
-            style={{ background: 'var(--bg-card)', boxShadow: 'var(--shadow-card)' }}>
-            <p className="text-[11px] font-bold uppercase tracking-widest mb-1"
-              style={{ color: 'var(--text-tertiary)' }}>{s.label}</p>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-                style={{ background: s.bg }}>
-                <span className="text-sm font-bold" style={{ color: s.color }}>{s.value}</span>
-              </div>
-            </div>
+        <div style={{ position: 'absolute', bottom: -30, left: -30, width: 150, height: 150, background: 'radial-gradient(circle, rgba(255,75,96,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{
+          position: 'relative', zIndex: 1, height: '100%',
+          display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+          padding: '24px 32px',
+        }}>
+          <div>
+            <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.5px', color: nonVues > 0 ? 'var(--vital-red)' : 'var(--accent)', display: 'flex', alignItems: 'center', gap: 5, marginBottom: 8 }}>
+              <BellRing size={10} /> Surveillance en temps réel
+            </span>
+            <h1 style={{ fontSize: '1.7rem', fontWeight: 800, color: 'var(--ink-1)', letterSpacing: '-1.2px', lineHeight: 1.1, margin: 0 }}>
+              Alertes patients
+            </h1>
           </div>
-        ))}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <p style={{ fontSize: 13, color: 'var(--ink-3)', margin: 0 }}>
+              {nonVues > 0
+                ? `${nonVues} alerte${nonVues > 1 ? 's' : ''} non vue${nonVues > 1 ? 's' : ''}`
+                : 'Valeurs hors normes de vos patients'}
+            </p>
+            {totalDanger > 0 && (
+              <span style={{ padding: '4px 10px', borderRadius: 8, fontSize: 11, fontWeight: 700, background: 'rgba(255,75,96,0.12)', color: 'var(--vital-red)', border: '1px solid rgba(255,75,96,0.22)' }}>
+                {totalDanger} Danger
+              </span>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* ══ FILTRES ══ */}
-      <div className="flex items-center gap-3 flex-wrap">
+      {/* ══ TOOLBAR ══ */}
+      <div className="flex items-center gap-3 flex-wrap animate-fade-up delay-150">
+        {/* Filtres */}
         <div className="pill-tabs">
           {TABS.map(t => (
             <button
@@ -180,8 +167,8 @@ export default function AlertesMedecinPage() {
                 <span
                   className="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold"
                   style={{
-                    background: filter === t.key ? (t.key === 'danger' ? '#FF2D55' : t.key === 'attention' ? '#FF9500' : 'var(--health-blue)') : 'var(--bg-tertiary)',
-                    color: filter === t.key ? 'white' : 'var(--text-tertiary)',
+                    background: filter === t.key ? (t.key === 'danger' ? '#FF5C6A' : t.key === 'attention' ? '#FF9500' : 'var(--accent)') : 'var(--surface-3)',
+                    color: filter === t.key ? 'white' : 'var(--ink-3)',
                   }}
                 >
                   {t.count}
@@ -191,19 +178,41 @@ export default function AlertesMedecinPage() {
           ))}
         </div>
 
-        {/* Toggle : inclure vues */}
-        <label className="flex items-center gap-2 cursor-pointer ml-auto">
-          <span className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>
-            Inclure les vues
-          </span>
+        {/* Actions droite */}
+        <div className="ml-auto flex items-center gap-2 flex-wrap">
+          {/* Toggle : inclure vues */}
+          <label className="flex items-center gap-2 cursor-pointer">
+            <span className="text-xs font-medium" style={{ color: 'var(--ink-3)' }}>
+              Inclure les vues
+            </span>
+            <button
+              onClick={() => setInclureVues(v => !v)}
+              className="toggle-track"
+              style={{ background: inclureVues ? 'var(--accent)' : undefined }}
+            >
+              <div className="toggle-thumb" style={{ transform: inclureVues ? 'translateX(20px)' : 'translateX(0)' }} />
+            </button>
+          </label>
+          {/* Actualiser */}
           <button
-            onClick={() => setInclureVues(v => !v)}
-            className="toggle-track"
-            style={{ background: inclureVues ? 'var(--health-blue)' : undefined }}
+            onClick={load}
+            className="w-9 h-9 rounded-xl flex items-center justify-center transition-all"
+            style={{ background: 'var(--surface-2)', border: '1px solid var(--border-0)', cursor: 'pointer', color: 'var(--ink-3)' }}
+            title="Actualiser"
           >
-            <div className="toggle-thumb" style={{ transform: inclureVues ? 'translateX(20px)' : 'translateX(0)' }} />
+            <RefreshCw size={15} />
           </button>
-        </label>
+          {/* Tout marquer vu */}
+          {nonVues > 0 && (
+            <button
+              onClick={handleMarquerToutesVues}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all"
+              style={{ background: 'var(--surface-2)', color: 'var(--accent)', border: '1px solid var(--border-0)', cursor: 'pointer' }}
+            >
+              <Eye size={15} /> Tout marquer comme vu
+            </button>
+          )}
+        </div>
       </div>
 
       {/* ══ LISTE ══ */}
@@ -212,14 +221,31 @@ export default function AlertesMedecinPage() {
           {[1,2,3,4,5].map(i => <div key={i} className="skeleton h-24 rounded-2xl" />)}
         </div>
       ) : alertes.length === 0 ? (
-        <div className="rounded-2xl p-16 text-center" style={{ background: 'var(--bg-card)', boxShadow: 'var(--shadow-card)' }}>
-          <CheckCircle2 size={48} style={{ color: 'var(--health-green)', margin: '0 auto 12px' }} />
-          <p className="font-semibold text-lg" style={{ color: 'var(--text-primary)' }}>
-            Aucune alerte {inclureVues ? '' : 'non vue '}pour vos patients
-          </p>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-tertiary)' }}>
-            {inclureVues ? 'Vos patients ne présentent pas d\'anomalie sur la période.' : 'Activez "Inclure les vues" pour voir l\'historique.'}
-          </p>
+        <div className="rounded-2xl overflow-hidden animate-fade-up" style={{ background: 'var(--surface-1)', border: '1px solid var(--border-0)' }}>
+          <div className="flex flex-col md:flex-row items-center gap-0">
+            <div className="w-full md:w-52 flex-shrink-0 flex items-center justify-center p-6"
+              style={{ background: 'linear-gradient(135deg, rgba(52,199,89,0.08), rgba(46,155,131,0.04))', minHeight: 200 }}>
+              <img
+                src="/illustrations/hero/illus-doctor-patient-smile.jpeg"
+                alt="" aria-hidden="true"
+                style={{ width: 150, height: 150, objectFit: 'contain' }}
+              />
+            </div>
+            <div className="p-8">
+              <div className="w-10 h-10 rounded-2xl flex items-center justify-center mb-4"
+                style={{ background: 'rgba(52,199,89,0.1)' }}>
+                <CheckCircle2 size={20} style={{ color: 'var(--vital-green)' }} />
+              </div>
+              <p className="font-bold text-lg mb-2" style={{ color: 'var(--ink-1)', letterSpacing: '-0.3px' }}>
+                Aucune alerte {inclureVues ? '' : 'non vue '}active
+              </p>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--ink-3)', maxWidth: 280 }}>
+                {inclureVues
+                  ? "Vos patients ne présentent pas d'anomalie sur la période."
+                  : 'Activez "Inclure les vues" pour consulter l\'historique complet.'}
+              </p>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="space-y-2">
@@ -233,15 +259,15 @@ export default function AlertesMedecinPage() {
                 key={alerte.id}
                 className="rounded-2xl px-5 py-4 flex items-start gap-4 transition-all"
                 style={{
-                  background:  alerte.vue ? 'var(--bg-card)' : cfg.bg,
-                  border:      `1px solid ${alerte.vue ? 'var(--border-subtle)' : cfg.border}`,
+                  background:  alerte.vue ? 'var(--surface-1)' : cfg.bg,
+                  border:      `1px solid ${alerte.vue ? 'var(--border-0)' : cfg.border}`,
                   opacity:     alerte.vue ? 0.7 : 1,
                 }}
               >
                 {/* Avatar patient */}
                 <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold text-white flex-shrink-0 mt-0.5"
-                  style={{ background: alerte.vue ? 'var(--bg-tertiary)' : avatarColor }}
+                  style={{ background: alerte.vue ? 'var(--surface-3)' : avatarColor }}
                 >
                   {alerte.patient_nom.split(' ').map(n => n[0]).join('').slice(0, 2)}
                 </div>
@@ -249,7 +275,7 @@ export default function AlertesMedecinPage() {
                 {/* Contenu */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap mb-1">
-                    <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>
+                    <p className="font-semibold text-sm" style={{ color: 'var(--ink-1)' }}>
                       {alerte.patient_nom}
                     </p>
                     <span
@@ -260,15 +286,15 @@ export default function AlertesMedecinPage() {
                     </span>
                     {alerte.vue && (
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-medium"
-                        style={{ background: 'var(--bg-secondary)', color: 'var(--text-tertiary)' }}>
+                        style={{ background: 'var(--surface-3)', color: 'var(--ink-3)' }}>
                         Vue
                       </span>
                     )}
                   </div>
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--ink-2)' }}>
                     {alerte.message}
                   </p>
-                  <p className="text-xs mt-1.5" style={{ color: 'var(--text-tertiary)' }}>
+                  <p className="text-xs mt-1.5" style={{ color: 'var(--ink-3)' }}>
                     {formatDistanceToNow(new Date(alerte.created_at), { locale: fr, addSuffix: true })}
                     {' · '}
                     {format(new Date(alerte.created_at), 'd MMM yyyy à HH:mm', { locale: fr })}
@@ -280,7 +306,7 @@ export default function AlertesMedecinPage() {
                   <button
                     onClick={() => navigate(`/medecin/patients/${alerte.patient_id}`)}
                     className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
-                    style={{ background: 'rgba(10,132,255,0.1)', color: 'var(--health-blue)', border: 'none', cursor: 'pointer' }}
+                    style={{ background: 'rgba(46,155,131,0.1)', color: 'var(--accent)', border: 'none', cursor: 'pointer' }}
                   >
                     Voir fiche <ChevronRight size={12} />
                   </button>
@@ -290,8 +316,8 @@ export default function AlertesMedecinPage() {
                       disabled={isMarquing}
                       className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-medium transition-all"
                       style={{
-                        background: 'var(--bg-secondary)',
-                        color: 'var(--text-tertiary)',
+                        background: 'var(--surface-2)',
+                        color: 'var(--ink-3)',
                         border: 'none',
                         cursor: isMarquing ? 'not-allowed' : 'pointer',
                         opacity: isMarquing ? 0.6 : 1,
@@ -309,3 +335,4 @@ export default function AlertesMedecinPage() {
     </div>
   )
 }
+

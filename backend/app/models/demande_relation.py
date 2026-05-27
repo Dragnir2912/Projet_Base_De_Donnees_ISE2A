@@ -12,6 +12,8 @@ class DemandeRelation(db.Model):
     medecin_id = db.Column(
         db.Integer, db.ForeignKey("utilisateurs.id", ondelete="CASCADE"), nullable=False
     )
+    # 'patient' | 'medecin'
+    initiateur = db.Column(db.String(10), nullable=False, server_default="patient")
     # 'en_attente' | 'acceptee' | 'refusee'
     statut = db.Column(db.String(20), nullable=False, default="en_attente")
     message = db.Column(db.Text, nullable=True)

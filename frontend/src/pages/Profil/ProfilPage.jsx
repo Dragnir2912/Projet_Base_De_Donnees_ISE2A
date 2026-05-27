@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { LogOut, Save, User, Shield, BellRing, Palette, Sun, Moon, ChevronRight, AlertCircle } from 'lucide-react'
 import Illustration from '../../components/ui/Illustration'
 import { format } from 'date-fns'
@@ -83,47 +83,57 @@ export default function ProfilPage() {
   const initials = `${user?.prenom?.[0] ?? ''}${user?.nom?.[0] ?? ''}`.toUpperCase()
 
   return (
-    <div className="flex gap-6">
+    <div className="flex gap-6 page-enter">
       {/* ===== Left nav ===== */}
       <div
-        className="w-64 flex-shrink-0 rounded-2xl p-4 self-start sticky top-6"
-        style={{ background: 'var(--bg-card)', boxShadow: 'var(--shadow-card)' }}
+        className="w-64 flex-shrink-0 self-start sticky top-6"
+        style={{
+          borderRadius: 20,
+          background: 'var(--glass-card)',
+          backdropFilter: 'blur(24px) saturate(1.8)',
+          WebkitBackdropFilter: 'blur(24px) saturate(1.8)',
+          border: '1px solid var(--glass-border)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+          padding: 16,
+        }}
       >
         {/* Avatar */}
-        <div className="flex flex-col items-center text-center p-4 mb-4">
-          <div
-            className="w-20 h-20 rounded-3xl flex items-center justify-center text-2xl font-bold text-white mb-3"
-            style={{ background: 'linear-gradient(135deg, #0A84FF, #BF5AF2)' }}
-          >
-            {initials || <User size={32} color="white" />}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '12px 12px 16px' }}>
+          <div style={{
+            width: 72, height: 72, borderRadius: 22,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '1.5rem', fontWeight: 800, marginBottom: 12,
+            background: 'var(--accent-dim)', border: '2px solid var(--border-2)', color: 'var(--accent)',
+          }}>
+            {initials || <User size={28} color="var(--accent)" />}
           </div>
-          <p className="font-bold" style={{ color: 'var(--text-primary)' }}>
+          <p style={{ fontWeight: 700, fontSize: 14, color: 'var(--ink-1)', margin: 0, letterSpacing: '-0.3px' }}>
             {user?.prenom} {user?.nom}
           </p>
-          <p className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{user?.email}</p>
+          <p style={{ fontSize: 11, color: 'var(--ink-3)', margin: '3px 0 0' }}>{user?.email}</p>
           <span
             className="badge mt-2 capitalize"
             style={{
-              background: user?.role === 'medecin' ? 'rgba(10,132,255,0.12)' : 'rgba(52,199,89,0.12)',
-              color:      user?.role === 'medecin' ? 'var(--health-blue)' : 'var(--health-green)',
+              background: user?.role === 'medecin' ? 'rgba(46,155,131,0.12)' : 'rgba(52,199,89,0.12)',
+              color:      user?.role === 'medecin' ? 'var(--accent)' : 'var(--vital-green)',
             }}
           >
             {user?.role}
           </span>
         </div>
 
-        <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 8 }}>
+        <div style={{ borderTop: '1px solid var(--glass-border)', paddingTop: 8 }}>
           {SECTIONS.map(({ key, icon: Icon, label }) => (
             <button
               key={key}
               onClick={() => setActiveSection(key)}
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 mb-0.5"
               style={{
-                background: activeSection === key ? 'rgba(10,132,255,0.08)' : 'transparent',
-                color:      activeSection === key ? 'var(--health-blue)' : 'var(--text-secondary)',
+                background: activeSection === key ? 'var(--accent-dim)' : 'transparent',
+                color:      activeSection === key ? 'var(--accent)' : 'var(--ink-2)',
                 border: 'none', cursor: 'pointer',
-                boxShadow: activeSection === key ? 'inset 3px 0 0 var(--health-blue)' : 'none',
-                borderRadius: activeSection === key ? '0 10px 10px 0' : '10px',
+                boxShadow: 'none',
+                borderRadius: 10,
               }}
             >
               <Icon size={16} />
@@ -138,32 +148,32 @@ export default function ProfilPage() {
         {/* Hero bannière profil */}
         <div style={{
           position: 'relative', overflow: 'hidden',
-          borderRadius: 20, padding: '28px 36px',
-          background: 'linear-gradient(135deg, var(--health-blue), var(--health-purple, #BF5AF2))',
-          boxShadow: '0 8px 32px rgba(10,132,255,0.25)',
-        }}>
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <p className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.75)' }}>
+          borderRadius: 22, height: 160,
+          background: 'var(--surface-1)',
+          border: '1px solid var(--border-0)',
+        }} className="animate-fade-up">
+          {/* Photo fills right half */}
+          <div style={{ position: 'absolute', right: 0, top: 0, width: '45%', height: '100%' }}>
+            <img src="/illustrations/hero/doctor.jpg" alt="" aria-hidden
+              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(90deg, var(--surface-1) 0%, rgba(241, 243, 242, 0.5) 40%, transparent 80%)',
+            }} />
+          </div>
+          <div style={{
+            position: 'absolute', bottom: -30, left: -30, width: 160, height: 160,
+            background: 'radial-gradient(circle, rgba(0,221,160,0.06) 0%, transparent 70%)', pointerEvents: 'none',
+          }} />
+          <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '20px 28px', gap: 4 }}>
+            <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.5px', color: 'var(--accent)' }}>
               {user?.role === 'medecin' ? 'Médecin' : 'Patient'}
-            </p>
-            <h2 className="text-xl font-bold text-white mt-0.5" style={{ letterSpacing: '-0.3px' }}>
+            </span>
+            <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--ink-1)', letterSpacing: '-0.8px', margin: 0 }}>
               {user?.prenom} {user?.nom}
             </h2>
-            <p className="text-sm mt-0.5" style={{ color: 'rgba(255,255,255,0.65)' }}>{user?.email}</p>
+            <p style={{ fontSize: 12, color: 'var(--ink-3)', margin: 0 }}>{user?.email}</p>
           </div>
-          <Illustration
-            name="profile-hero"
-            width={140} height={140}
-            fadeSide="left"
-            priority={true}
-            style={{
-              position: 'absolute',
-              right: 24, bottom: 0,
-              opacity: 0.82,
-              pointerEvents: 'none',
-              zIndex: 0,
-            }}
-          />
         </div>
         {/* === Informations personnelles === */}
         {activeSection === 'info' && (
@@ -197,9 +207,9 @@ export default function ProfilPage() {
                     disabled={saving}
                     className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm text-white transition-all"
                     style={{
-                      background: saving ? 'var(--bg-tertiary)' : 'linear-gradient(135deg, #0A84FF, #5AC8FA)',
-                      color: saving ? 'var(--text-tertiary)' : 'white',
-                      boxShadow: saving ? 'none' : '0 4px 14px rgba(10,132,255,0.3)',
+                      background: saving ? 'var(--surface-3)' : 'var(--accent)',
+                      color: saving ? 'var(--ink-3)' : '#0A1512',
+                      boxShadow: saving ? 'none' : '0 4px 16px rgba(0,221,160,0.28)',
                       border: 'none', cursor: saving ? 'not-allowed' : 'pointer',
                     }}
                   >
@@ -226,12 +236,14 @@ export default function ProfilPage() {
                   return (
                     <div
                       key={cle}
-                      className="flex items-center justify-between px-4 py-4 rounded-xl"
-                      style={{ borderBottom: '1px solid var(--border-subtle)' }}
+                      style={{
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        padding: '14px 0', borderBottom: '1px solid var(--border-0)',
+                      }}
                     >
                       <div>
-                        <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{label}</p>
-                        <p className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{desc}</p>
+                        <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-1)', margin: 0 }}>{label}</p>
+                        <p style={{ fontSize: 11, color: 'var(--ink-3)', margin: '2px 0 0' }}>{desc}</p>
                       </div>
                       <button
                         onClick={() => onTogglePref(cle, String(val))}
@@ -263,25 +275,25 @@ export default function ProfilPage() {
                     onClick={() => setTheme(key)}
                     className="flex items-center gap-3 p-4 rounded-2xl text-left transition-all duration-150"
                     style={{
-                      background: theme === key ? 'rgba(10,132,255,0.08)' : 'var(--bg-secondary)',
-                      border: `2px solid ${theme === key ? 'var(--health-blue)' : 'transparent'}`,
+                      background: theme === key ? 'var(--accent-dim)' : 'var(--surface-2)',
+                      border: `1.5px solid ${theme === key ? 'var(--border-2)' : 'transparent'}`,
                       cursor: 'pointer',
                     }}
                   >
                     <div
                       className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
                       style={{
-                        background: theme === key ? 'rgba(10,132,255,0.12)' : 'var(--bg-tertiary)',
-                        color: theme === key ? 'var(--health-blue)' : 'var(--text-tertiary)',
+                        background: theme === key ? 'rgba(0,221,160,0.12)' : 'var(--surface-3)',
+                        color: theme === key ? 'var(--accent)' : 'var(--ink-3)',
                       }}
                     >
                       <Icon size={18} />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold" style={{ color: theme === key ? 'var(--health-blue)' : 'var(--text-primary)' }}>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: theme === key ? 'var(--accent)' : 'var(--ink-1)', margin: 0 }}>
                         {label}
                       </p>
-                      <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{desc}</p>
+                      <p style={{ fontSize: 11, color: 'var(--ink-3)', margin: '2px 0 0' }}>{desc}</p>
                     </div>
                   </button>
                 ))}
@@ -321,9 +333,9 @@ export default function ProfilPage() {
                   onClick={() => setShowLogoutConfirm(true)}
                   className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all"
                   style={{
-                    background: 'rgba(255,45,85,0.08)',
-                    color: 'var(--health-red)',
-                    border: '1.5px solid rgba(255,45,85,0.2)',
+                    background: 'rgba(255,92,106,0.08)',
+                    color: 'var(--vital-red)',
+                    border: '1.5px solid rgba(255,92,106,0.2)',
                     cursor: 'pointer',
                   }}
                 >
@@ -331,30 +343,33 @@ export default function ProfilPage() {
                   Se déconnecter
                 </button>
               ) : (
-                <div
-                  className="rounded-xl p-4 flex items-start gap-3"
-                  style={{ background: 'rgba(255,45,85,0.06)', border: '1px solid rgba(255,45,85,0.2)' }}
-                >
-                  <AlertCircle size={18} style={{ color: 'var(--health-red)', flexShrink: 0, marginTop: 2 }} />
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+                <div style={{
+                  borderRadius: 16, padding: '16px 18px',
+                  display: 'flex', alignItems: 'flex-start', gap: 12,
+                  background: 'rgba(255,92,106,0.06)', border: '1px solid rgba(255,92,106,0.18)',
+                }}>
+                  <AlertCircle size={18} style={{ color: 'var(--vital-red)', flexShrink: 0, marginTop: 2 }} />
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-1)', margin: 0 }}>
                       Confirmer la déconnexion ?
                     </p>
-                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
+                    <p style={{ fontSize: 11, color: 'var(--ink-3)', margin: '3px 0 0' }}>
                       Vous devrez vous reconnecter pour accéder à Sotera.
                     </p>
-                    <div className="flex gap-2 mt-3">
+                    <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
                       <button
                         onClick={() => setShowLogoutConfirm(false)}
-                        className="px-4 py-2 rounded-xl text-sm font-medium transition-all"
-                        style={{ background: 'var(--bg-secondary)', color: 'var(--text-secondary)', border: 'none', cursor: 'pointer' }}
+                        style={{
+                          padding: '8px 16px', borderRadius: 10, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                          background: 'var(--surface-2)', color: 'var(--ink-2)', border: '1px solid var(--border-0)',
+                        }}
                       >
                         Annuler
                       </button>
                       <button
                         onClick={handleLogout}
                         className="px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all"
-                        style={{ background: 'var(--health-red)', border: 'none', cursor: 'pointer' }}
+                        style={{ background: 'var(--vital-red)', border: 'none', cursor: 'pointer' }}
                       >
                         Se déconnecter
                       </button>
@@ -373,12 +388,19 @@ export default function ProfilPage() {
 /* ===== Helpers ===== */
 function SectionCard({ title, desc, children }) {
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--bg-card)', boxShadow: 'var(--shadow-card)' }}>
-      <div className="px-6 py-5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-        <h2 className="font-bold" style={{ color: 'var(--text-primary)' }}>{title}</h2>
-        {desc && <p className="text-sm mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{desc}</p>}
+    <div style={{
+      borderRadius: 20, overflow: 'hidden',
+      background: 'var(--glass-card)',
+      backdropFilter: 'blur(24px) saturate(1.8)',
+      WebkitBackdropFilter: 'blur(24px) saturate(1.8)',
+      border: '1px solid var(--glass-border)',
+      boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+    }}>
+      <div style={{ padding: '18px 24px', borderBottom: '1px solid var(--glass-border)' }}>
+        <h2 style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink-1)', letterSpacing: '-0.3px', margin: 0 }}>{title}</h2>
+        {desc && <p style={{ fontSize: 12, color: 'var(--ink-3)', marginTop: 3, marginBottom: 0 }}>{desc}</p>}
       </div>
-      <div className="px-6 py-5">{children}</div>
+      <div style={{ padding: '20px 24px' }}>{children}</div>
     </div>
   )
 }
@@ -400,9 +422,12 @@ function Field({ label, type = 'text', value, onChange, placeholder }) {
 
 function InfoRow({ label, value }) {
   return (
-    <div className="flex items-center justify-between py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-      <span className="text-sm" style={{ color: 'var(--text-tertiary)' }}>{label}</span>
-      <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{value ?? '—'}</span>
+    <div style={{
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      padding: '12px 0', borderBottom: '1px solid var(--border-0)',
+    }}>
+      <span style={{ fontSize: 13, color: 'var(--ink-3)' }}>{label}</span>
+      <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-1)' }}>{value ?? '—'}</span>
     </div>
   )
 }

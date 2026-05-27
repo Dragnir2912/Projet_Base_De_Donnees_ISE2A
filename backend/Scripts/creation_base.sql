@@ -236,6 +236,7 @@ CREATE TABLE demandes_relation (
     id          SERIAL PRIMARY KEY,
     patient_id  INTEGER       NOT NULL,
     medecin_id  INTEGER       NOT NULL,
+    initiateur  VARCHAR(10)   NOT NULL DEFAULT 'patient',
     statut      VARCHAR(20)   NOT NULL DEFAULT 'en_attente',
     message     TEXT,
     created_at  TIMESTAMP     NOT NULL DEFAULT NOW(),
@@ -245,12 +246,14 @@ CREATE TABLE demandes_relation (
         REFERENCES utilisateurs(id) ON DELETE CASCADE,
     CONSTRAINT fk_dem_medecin FOREIGN KEY (medecin_id)
         REFERENCES utilisateurs(id) ON DELETE CASCADE,
-    CONSTRAINT ck_statut_demande CHECK (statut IN ('en_attente', 'acceptee', 'refusee')),
+    CONSTRAINT ck_statut_demande CHECK (statut     IN ('en_attente', 'acceptee', 'refusee')),
+    CONSTRAINT ck_initiateur     CHECK (initiateur IN ('patient', 'medecin')),
     CONSTRAINT uk_demande_patient_medecin UNIQUE (patient_id, medecin_id)
 );
 
-COMMENT ON TABLE  demandes_relation         IS 'Demandes de mise en relation patient → médecin';
-COMMENT ON COLUMN demandes_relation.statut  IS 'en_attente | acceptee | refusee';
+COMMENT ON TABLE  demandes_relation             IS 'Demandes/invitations de mise en relation';
+COMMENT ON COLUMN demandes_relation.initiateur  IS 'patient = envoyé par le patient | medecin = invitation du médecin';
+COMMENT ON COLUMN demandes_relation.statut      IS 'en_attente | acceptee | refusee';
 
 CREATE INDEX idx_demandes_medecin_statut ON demandes_relation(medecin_id, statut);
 CREATE INDEX idx_demandes_patient        ON demandes_relation(patient_id);

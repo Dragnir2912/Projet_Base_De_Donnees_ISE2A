@@ -1,69 +1,112 @@
-import { Sun, Moon, BellRing } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { Sun, Moon, Bell, ChevronRight } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
 import useAuthStore from '../../store/authStore'
 import useAlertesStore from '../../store/alertesStore'
 import useThemeStore from '../../store/themeStore'
 
-export default function Topbar({ title }) {
-  const { user }      = useAuthStore()
-  const { nbNonVues } = useAlertesStore()
+export default function Topbar({ breadcrumb }) {
+  const { user }               = useAuthStore()
+  const { nbNonVues }          = useAlertesStore()
   const { theme, toggleTheme } = useThemeStore()
-  const navigate   = useNavigate()
-  const initials   = `${user?.prenom?.[0] ?? ''}${user?.nom?.[0] ?? ''}`.toUpperCase()
-  const isMedecin  = user?.role === 'medecin'
+  const navigate               = useNavigate()
+  const initials               = `${user?.prenom?.[0] ?? ''}${user?.nom?.[0] ?? ''}`.toUpperCase()
+  const isMedecin              = user?.role === 'medecin'
 
   return (
-    <header
-      className="glass flex items-center px-6 gap-4 flex-shrink-0"
-      style={{
-        height: 60,
-        borderBottom: '1px solid var(--border-subtle)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 30,
-      }}
-    >
-      {/* Titre page */}
-      <div className="flex-1 min-w-0">
-        <h1 className="text-[15px] font-semibold truncate"
-          style={{ color: 'var(--text-primary)', letterSpacing: '-0.3px' }}>
-          {title}
+    <header style={{
+      height: 58,
+      display: 'flex', alignItems: 'center',
+      paddingLeft: 28, paddingRight: 20,
+      gap: 14, flexShrink: 0,
+      position: 'sticky', top: 0, zIndex: 30,
+      background: 'var(--surface-1)',
+      borderBottom: '1px solid var(--border-0)',
+      backdropFilter: 'blur(32px) saturate(1.8)',
+      WebkitBackdropFilter: 'blur(32px) saturate(1.8)',
+    }}>
+
+      {/* Breadcrumb */}
+      <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+        {breadcrumb?.parent && (
+          <>
+            <Link
+              to={breadcrumb.parent.to}
+              style={{
+                fontSize: 13, fontWeight: 500,
+                color: 'var(--ink-3)', textDecoration: 'none',
+                whiteSpace: 'nowrap', transition: 'color 0.15s ease',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = 'var(--ink-2)' }}
+              onMouseLeave={e => { e.currentTarget.style.color = 'var(--ink-3)' }}
+            >
+              {breadcrumb.parent.label}
+            </Link>
+            <ChevronRight size={12} style={{ color: 'var(--ink-4)', flexShrink: 0 }} />
+          </>
+        )}
+        <h1 style={{
+          fontSize: 14, fontWeight: 700,
+          color: 'var(--ink-1)', letterSpacing: '-0.4px',
+          overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis',
+          margin: 0,
+        }}>
+          {breadcrumb?.label ?? 'Sotera'}
         </h1>
       </div>
 
-      {/* Actions droite */}
-      <div className="flex items-center gap-1.5 flex-shrink-0">
+      {/* Actions */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
 
         {/* Theme toggle */}
         <TopbarBtn onClick={toggleTheme} label={theme === 'dark' ? 'Mode clair' : 'Mode sombre'}>
           {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
         </TopbarBtn>
 
-        {/* Cloche alertes (patients) */}
+        {/* Alertes badge (patients uniquement) */}
         {!isMedecin && (
-          <TopbarBtn onClick={() => navigate('/alertes')} label="Alertes" className="relative">
-            <BellRing size={15} />
+          <div style={{ position: 'relative' }}>
+            <TopbarBtn onClick={() => navigate('/alertes')} label="Alertes">
+              <Bell size={15} />
+            </TopbarBtn>
             {nbNonVues > 0 && (
-              <span
-                className="absolute top-1 right-1 min-w-[16px] h-[16px] rounded-full text-white flex items-center justify-center badge-pulse px-0.5"
-                style={{ background: 'var(--health-red)', fontSize: 8, fontWeight: 800, lineHeight: 1 }}>
+              <span className="badge-pulse" style={{
+                position: 'absolute', top: 6, right: 6,
+                minWidth: 15, height: 15, borderRadius: 99,
+                background: 'var(--vital-red)', color: 'white',
+                fontSize: 8, fontWeight: 800,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: '0 3px', pointerEvents: 'none',
+              }}>
                 {nbNonVues > 9 ? '9+' : nbNonVues}
               </span>
             )}
-          </TopbarBtn>
+          </div>
         )}
+
+        <div style={{ width: 1, height: 18, background: 'var(--border-1)', margin: '0 4px' }} />
 
         {/* Avatar */}
         <button
           onClick={() => navigate('/profil')}
-          className="w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-bold text-white transition-all duration-200"
-          style={{
-            background: 'linear-gradient(135deg, #0A84FF, #BF5AF2)',
-            boxShadow: '0 2px 8px rgba(10,132,255,0.35)',
-          }}
-          onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.06)'}
-          onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
           aria-label="Mon profil"
+          style={{
+            width: 34, height: 34, borderRadius: '50%',
+            background: 'var(--gradient-accent)',
+            border: 'none', cursor: 'pointer',
+            color: 'white', fontSize: 11, fontWeight: 700,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 2px 10px rgba(0,221,160,0.28)',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            letterSpacing: '-0.5px',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.transform = 'scale(1.06)'
+            e.currentTarget.style.boxShadow = '0 4px 18px rgba(0,221,160,0.45)'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.transform = 'scale(1)'
+            e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,221,160,0.28)'
+          }}
         >
           {initials}
         </button>
@@ -72,15 +115,25 @@ export default function Topbar({ title }) {
   )
 }
 
-function TopbarBtn({ onClick, label, children, className = '' }) {
+function TopbarBtn({ onClick, label, children }) {
   return (
     <button
       onClick={onClick}
       aria-label={label}
-      className={`relative w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 ${className}`}
-      style={{ background: 'var(--bg-secondary)', color: 'var(--text-tertiary)', border: 'none', cursor: 'pointer' }}
-      onMouseEnter={e => { e.currentTarget.style.background = 'var(--bg-tertiary)'; e.currentTarget.style.color = 'var(--text-primary)' }}
-      onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-secondary)'; e.currentTarget.style.color = 'var(--text-tertiary)' }}
+      style={{
+        width: 34, height: 34, borderRadius: 10,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: 'transparent', border: 'none', cursor: 'pointer',
+        color: 'var(--ink-3)', transition: 'all 0.18s ease',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.background = 'var(--surface-2)'
+        e.currentTarget.style.color = 'var(--ink-1)'
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.background = 'transparent'
+        e.currentTarget.style.color = 'var(--ink-3)'
+      }}
     >
       {children}
     </button>

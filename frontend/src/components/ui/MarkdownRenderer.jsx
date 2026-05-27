@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Renderer Markdown léger — sans dépendance externe.
  */
 
@@ -17,7 +17,7 @@ function parseInline(text) {
     else if (m[4]) parts.push(<em key={idx++}>{m[4]}</em>)
     else if (m[5]) parts.push(
       <code key={idx++} style={{
-        background: 'rgba(191,90,242,0.12)',
+        background: 'rgba(26,124,108,0.12)',
         borderRadius: 4, padding: '1px 5px',
         fontSize: '0.84em', fontFamily: 'monospace',
         color: 'var(--health-purple)',

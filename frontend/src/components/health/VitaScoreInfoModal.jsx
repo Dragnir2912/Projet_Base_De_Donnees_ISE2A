@@ -1,4 +1,4 @@
-import { X, Info } from 'lucide-react'
+﻿import { X, Info } from 'lucide-react'
 
 /**
  * Modal d'explication du VitaScore.
@@ -13,7 +13,7 @@ export default function VitaScoreInfoModal({ onClose, score }) {
     { min: 80, max: 100, label: 'Excellent',              color: '#34C759', bg: 'rgba(52,199,89,0.1)',  emoji: '🟢' },
     { min: 65, max: 79,  label: 'Bon état général',       color: '#34C759', bg: 'rgba(52,199,89,0.08)', emoji: '🟢' },
     { min: 50, max: 64,  label: 'Surveillance recommandée', color: '#FF9500', bg: 'rgba(255,149,0,0.1)', emoji: '🟡' },
-    { min: 0,  max: 49,  label: 'Consultation urgente',   color: '#FF2D55', bg: 'rgba(255,45,85,0.1)',  emoji: '🔴' },
+    { min: 0,  max: 49,  label: 'Consultation urgente',   color: '#FF5C6A', bg: 'rgba(255,92,106,0.1)',  emoji: '🔴' },
   ]
 
   const INDICATEURS = [
@@ -62,7 +62,7 @@ export default function VitaScoreInfoModal({ onClose, score }) {
                 <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="4" />
                 {score !== null && score !== undefined && (
                   <circle cx="24" cy="24" r="20" fill="none"
-                    stroke={scoreRange?.color ?? '#8E8E93'}
+                    stroke={scoreRange?.color ?? '#7A9490'}
                     strokeWidth="4"
                     strokeDasharray={`${(score / 100) * (2 * Math.PI * 20)} ${2 * Math.PI * 20}`}
                     strokeLinecap="round" />
@@ -124,7 +124,7 @@ export default function VitaScoreInfoModal({ onClose, score }) {
             <p className="text-sm leading-relaxed mt-2" style={{ color: 'var(--text-secondary)' }}>
               Un score de <span style={{ color: '#34C759', fontWeight: 600 }}>100</span> signifie que toutes
               vos mesures sont dans les zones normales OMS.
-              Un score de <span style={{ color: '#FF2D55', fontWeight: 600 }}>0</span> indiquerait des valeurs
+              Un score de <span style={{ color: '#FF5C6A', fontWeight: 600 }}>0</span> indiquerait des valeurs
               critiques sur l'ensemble des indicateurs.
             </p>
           </section>
@@ -143,7 +143,7 @@ export default function VitaScoreInfoModal({ onClose, score }) {
               {[
                 { label: 'Normal',    factor: '× 1,0  (100%)', color: '#34C759' },
                 { label: 'Attention', factor: '× 0,5  (50%)',  color: '#FF9500' },
-                { label: 'Danger',    factor: '× 0,1  (10%)',  color: '#FF2D55' },
+                { label: 'Danger',    factor: '× 0,1  (10%)',  color: '#FF5C6A' },
               ].map(s => (
                 <div key={s.label} className="rounded-xl px-3 py-2.5 text-center"
                   style={{ background: `${s.color}12`, border: `1px solid ${s.color}30` }}>
@@ -217,7 +217,7 @@ export default function VitaScoreInfoModal({ onClose, score }) {
 
           {/* Note */}
           <div className="flex gap-2 px-4 py-3 rounded-xl"
-            style={{ background: 'rgba(10,132,255,0.08)', border: '1px solid rgba(10,132,255,0.15)' }}>
+            style={{ background: 'rgba(46,155,131,0.08)', border: '1px solid rgba(46,155,131,0.15)' }}>
             <Info size={14} style={{ color: 'var(--health-blue)', flexShrink: 0, marginTop: 2 }} />
             <p className="text-xs leading-relaxed" style={{ color: 'var(--health-blue)' }}>
               Le VitaScore est un outil d'aide au suivi, pas un diagnostic médical.
@@ -260,7 +260,7 @@ function CoefBar({ coef }) {
     <div className="w-20 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--bg-tertiary)' }}>
       <div className="h-full rounded-full" style={{
         width: `${coef * 100}%`,
-        background: coef >= 0.8 ? '#34C759' : coef >= 0.6 ? '#0A84FF' : '#FF9500',
+        background: coef >= 0.8 ? '#34C759' : coef >= 0.6 ? '#2E9B83' : '#FF9500',
       }} />
     </div>
   )

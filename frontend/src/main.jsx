@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
@@ -14,7 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         toastOptions={{
           style: {
             borderRadius: '12px',
-            fontFamily: '"DM Sans", system-ui, sans-serif',
+            fontFamily: '"Poppins", system-ui, sans-serif',
             fontSize: '14px',
             background: 'var(--bg-card)',
             color: 'var(--text-primary)',
@@ -26,3 +26,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </BrowserRouter>
   </React.StrictMode>
 )
+

@@ -118,6 +118,115 @@ def get_demande_patient(patient_id: int, medecin_id: int) -> str | None:
     return d.statut if d else None
 
 
+def get_demandes_patient(patient_id: int) -> list[dict]:
+    """Retourne les demandes ENVOYÉES par le patient (initiateur='patient')."""
+    demandes = (
+        DemandeRelation.query
+        .filter_by(patient_id=patient_id, initiateur="patient")
+        .filter(DemandeRelation.statut.in_(["en_attente", "refusee"]))
+        .order_by(DemandeRelation.created_at.desc())
+        .all()
+    )
+    result = []
+    for d in demandes:
+        m = d.medecin
+        result.append({
+            "id": d.id,
+            "medecin": {
+                "id": m.id,
+                "nom": m.nom,
+                "prenom": m.prenom,
+                "specialite": m.specialite or "Médecin généraliste",
+            },
+            "statut": d.statut,
+            "created_at": d.created_at.isoformat(),
+        })
+    return result
+
+
+def get_invitations_patient(patient_id: int) -> list[dict]:
+    """Retourne les invitations reçues par le patient (initiateur='medecin')."""
+    invitations = (
+        DemandeRelation.query
+        .filter_by(patient_id=patient_id, initiateur="medecin", statut="en_attente")
+        .order_by(DemandeRelation.created_at.desc())
+        .all()
+    )
+    result = []
+    for d in invitations:
+        m = d.medecin
+        result.append({
+            "id": d.id,
+            "medecin": {
+                "id": m.id,
+                "nom": m.nom,
+                "prenom": m.prenom,
+                "specialite": m.specialite or "Médecin généraliste",
+            },
+            "created_at": d.created_at.isoformat(),
+        })
+    return result
+
+
+def inviter_patient(medecin_id: int, patient_id: int) -> DemandeRelation:
+    """Médecin envoie une invitation de suivi à un patient."""
+    patient = Utilisateur.query.filter_by(id=patient_id, role="patient", actif=True).first()
+    if not patient:
+        raise ValueError("Patient introuvable.")
+
+    existing_relation = RelationMedecinPatient.query.filter_by(
+        patient_id=patient_id, active=True
+    ).first()
+    if existing_relation:
+        raise ValueError("Ce patient est déjà suivi par un médecin.")
+
+    existing = DemandeRelation.query.filter_by(
+        patient_id=patient_id, medecin_id=medecin_id, statut="en_attente"
+    ).first()
+    if existing:
+        raise ValueError("Une invitation est déjà en attente pour ce patient.")
+
+    demande = DemandeRelation(
+        patient_id=patient_id,
+        medecin_id=medecin_id,
+        initiateur="medecin",
+    )
+    db.session.add(demande)
+    db.session.commit()
+    return demande
+
+
+def repondre_invitation_medecin(patient_id: int, invitation_id: int, accepter: bool) -> None:
+    """Patient accepte ou refuse une invitation d'un médecin."""
+    invitation = DemandeRelation.query.filter_by(
+        id=invitation_id, patient_id=patient_id, initiateur="medecin", statut="en_attente"
+    ).first()
+    if not invitation:
+        raise ValueError("Invitation introuvable ou déjà traitée.")
+
+    if accepter:
+        invitation.statut = "acceptee"
+        existing = RelationMedecinPatient.query.filter_by(
+            medecin_id=invitation.medecin_id, patient_id=patient_id
+        ).first()
+        if existing:
+            existing.active = True
+            existing.date_debut = date.today()
+            existing.date_fin = None
+        else:
+            relation = RelationMedecinPatient(
+                medecin_id=invitation.medecin_id,
+                patient_id=patient_id,
+                date_debut=date.today(),
+            )
+            db.session.add(relation)
+    else:
+        invitation.statut = "refusee"
+
+    invitation.updated_at = datetime.utcnow()
+    db.session.commit()
+
+
 def terminer_suivi(patient_id: int, relation_id: int) -> None:
     """Patient met fin à son suivi avec son médecin."""
     relation = RelationMedecinPatient.query.filter_by(
@@ -184,8 +293,27 @@ def repondre_demande(medecin_id: int, demande_id: int, accepter: bool) -> None:
     db.session.commit()
 
 
-def chercher_patients(search: str = "") -> list[dict]:
-    """Médecin recherche des patients par nom/email."""
+def chercher_patients(medecin_id: int, search: str = "") -> list[dict]:
+    """Retourne tous les patients avec leur statut de disponibilité pour invitation."""
+    # Patients déjà suivis (relation active avec n'importe quel médecin)
+    active_ids = {
+        r.patient_id
+        for r in RelationMedecinPatient.query.filter_by(active=True).all()
+    }
+    # Patients avec invitation en attente de CE médecin
+    try:
+        pending_ids = {
+            d.patient_id
+            for d in DemandeRelation.query.filter_by(
+                medecin_id=medecin_id, initiateur="medecin", statut="en_attente"
+            ).all()
+        }
+    except Exception:
+        # La colonne 'initiateur' n'existe pas encore en base (migration non appliquée)
+        from ..extensions import db as _db
+        _db.session.rollback()
+        pending_ids = set()
+
     q = Utilisateur.query.filter_by(role="patient", actif=True)
     if search:
         like = f"%{search}%"
@@ -196,5 +324,13 @@ def chercher_patients(search: str = "") -> list[dict]:
                 Utilisateur.email.ilike(like),
             )
         )
-    patients = q.limit(20).all()
-    return [_fmt_patient(p) for p in patients]
+
+    patients = q.order_by(Utilisateur.nom).limit(100).all()
+
+    result = []
+    for p in patients:
+        d = _fmt_patient(p)
+        d["disponible"] = p.id not in active_ids
+        d["invitation_envoyee"] = p.id in pending_ids
+        result.append(d)
+    return result

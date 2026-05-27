@@ -4,7 +4,7 @@ export default function Button({ children, variant = 'primary', size = 'md', cla
     primary: 'bg-health-blue text-white hover:brightness-110',
     danger:  'bg-health-red text-white hover:brightness-110',
     ghost:   'bg-transparent text-health-blue hover:bg-blue-50',
-    outline: 'border border-[#E5E5EA] bg-white text-[#1C1C1E] hover:bg-[#F2F2F7]',
+    outline: 'border bg-white hover:opacity-90',
   }
   return (
     <button

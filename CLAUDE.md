@@ -126,44 +126,42 @@ sotera/
 
 ---
 
-## 🎨 Design System — inspiré Apple Health
+## 🎨 Design System — palette Émeraude / Teal
 
 ### Palette de couleurs
 ```css
 :root {
-  /* Fonds */
-  --color-bg-primary:    #FFFFFF;
-  --color-bg-secondary:  #F2F2F7;
-  --color-bg-tertiary:   #E5E5EA;
+  /* Marque — Teal émeraude */
+  --primary:         #1A7C6C;   /* Hero backgrounds, dark teal */
+  --primary-mid:     #2E9B83;   /* Boutons, états actifs, liens */
+  --primary-light:   #40B896;   /* Charts, remplissages clairs */
+  --primary-pale:    rgba(46,155,131,0.10); /* Hover states */
+
+  /* Fonds (thème clair) */
+  --bg-app:          #F0F5F4;
+  --bg-card:         #FFFFFF;
+  --bg-secondary:    #F0F5F4;
 
   /* Textes */
-  --color-text-primary:   #1C1C1E;
-  --color-text-secondary: #3A3A3C;
-  --color-text-tertiary:  #8E8E93;
-  --color-text-inverse:   #FFFFFF;
+  --text-primary:    #1C2B28;
+  --text-secondary:  #3A4D49;
+  --text-tertiary:   #7A9490;
+  --text-inverse:    #FFFFFF;
 
-  /* Couleurs santé (Apple Health palette) */
-  --color-health-red:    #FF2D55;   /* Cardio, tension */
-  --color-health-orange: #FF9500;   /* Activité */
-  --color-health-yellow: #FFCC00;   /* Vigilance */
-  --color-health-green:  #34C759;   /* Normal, SpO2 */
-  --color-health-teal:   #5AC8FA;   /* Hydratation */
-  --color-health-blue:   #007AFF;   /* Actions, liens */
-  --color-health-purple: #AF52DE;   /* Sommeil */
-  --color-health-pink:   #FF375F;   /* Fréquence cardiaque */
+  /* Couleurs santé */
+  --health-red:      #FF5C6A;   /* Danger, alertes */
+  --health-orange:   #FF9500;   /* Attention, activité */
+  --health-yellow:   #FFD60A;   /* Vigilance */
+  --health-green:    #34C759;   /* Normal, SpO2 */
+  --health-teal:     #40B896;   /* Hydratation, accent clair */
+  --health-blue:     #2E9B83;   /* Actions principales (= primary-mid) */
+  --health-purple:   #1A7C6C;   /* Sommeil (= primary) */
+  --health-pink:     #FF7B73;   /* Fréquence cardiaque */
 
   /* États */
   --color-success: #34C759;
   --color-warning: #FF9500;
-  --color-danger:  #FF2D55;
-
-  /* Composants */
-  --radius-sm:  8px;
-  --radius-md:  14px;
-  --radius-lg:  20px;
-  --radius-xl:  28px;
-  --shadow-card: 0 2px 20px rgba(0,0,0,0.06);
-  --shadow-modal: 0 8px 40px rgba(0,0,0,0.12);
+  --color-danger:  #FF5C6A;
 }
 ```
 

@@ -14,9 +14,9 @@ export default function Navbar() {
   }
 
   return (
-    <header className="hidden md:flex fixed top-0 left-0 right-0 h-14 bg-white/90 backdrop-blur-md border-b border-[#E5E5EA] z-50 items-center px-6 gap-6">
-      <div className="flex items-center gap-2 font-bold text-[#1C1C1E] text-lg mr-4">
-        <Leaf size={20} className="text-health-blue" />
+    <header className="hidden md:flex fixed top-0 left-0 right-0 h-14 bg-white/95 backdrop-blur-md border-b z-50 items-center px-6 gap-6" style={{ borderColor: 'var(--border-subtle)' }}>
+      <div className="flex items-center gap-2 font-bold text-lg mr-4" style={{ color: 'var(--primary)' }}>
+        <Leaf size={20} style={{ color: 'var(--primary-mid)' }} />
         <span>Sotera</span>
       </div>
 
@@ -38,11 +38,11 @@ export default function Navbar() {
       </nav>
 
       <div className="flex items-center gap-3">
-        <span className="text-sm text-[#3A3A3C]">{user?.prenom} {user?.nom}</span>
-        <NavLink to="/profil" className="w-8 h-8 rounded-full bg-health-blue text-white flex items-center justify-center text-xs font-bold">
+        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{user?.prenom} {user?.nom}</span>
+        <NavLink to="/profil" className="w-8 h-8 rounded-full text-white flex items-center justify-center text-xs font-bold" style={{ background: 'linear-gradient(135deg,#1A7C6C,#2E9B83)' }}>
           {user?.prenom?.[0]}{user?.nom?.[0]}
         </NavLink>
-        <button onClick={handleLogout} className="text-[#8E8E93] hover:text-[#FF2D55] transition-colors">
+        <button onClick={handleLogout} className="transition-colors" style={{ color: 'var(--text-tertiary)' }} onMouseEnter={e => e.currentTarget.style.color='#FF5C6A'} onMouseLeave={e => e.currentTarget.style.color='var(--text-tertiary)'}>
           <LogOut size={18} />
         </button>
       </div>
@@ -54,16 +54,16 @@ function NavItem({ to, icon: Icon, label, badge }) {
   return (
     <NavLink
       to={to}
-      className={({ isActive }) =>
-        `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 relative ${
-          isActive ? 'bg-[#F2F2F7] text-health-blue' : 'text-[#3A3A3C] hover:bg-[#F2F2F7]'
-        }`
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 relative"
+      style={({ isActive }) => isActive
+        ? { background: 'rgba(46,155,131,0.10)', color: '#2E9B83' }
+        : { color: 'var(--text-secondary)' }
       }
     >
       <Icon size={16} />
       <span>{label}</span>
       {badge > 0 && (
-        <span className="ml-1 w-4 h-4 bg-health-red text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+        <span className="ml-1 w-4 h-4 text-white text-[9px] font-bold rounded-full flex items-center justify-center" style={{ background: '#FF5C6A' }}>
           {badge > 9 ? '9+' : badge}
         </span>
       )}

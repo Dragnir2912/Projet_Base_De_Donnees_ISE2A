@@ -1,11 +1,11 @@
-/**
+﻿/**
  * Contenu éditorial statique des fiches par type de mesure.
  * Clé = nom exact du type dans la BDD.
  */
 export const FICHES = {
   'Glycémie': {
     emoji: '🩸',
-    couleur: '#FF2D55',
+    couleur: '#FF5C6A',
     quoi: 'Taux de glucose dans le sang. Mesuré idéalement à jeun le matin, avant tout repas. Indicateur principal pour le dépistage et le suivi du diabète.',
     conseils: [
       'Évitez les sucres rapides (bonbons, sodas) le soir.',
@@ -31,7 +31,7 @@ export const FICHES = {
 
   'Fréquence cardiaque': {
     emoji: '❤️',
-    couleur: '#FF375F',
+    couleur: '#FF7B73',
     quoi: 'Nombre de battements du cœur par minute, mesurée au repos. Une fréquence élevée peut signaler stress, déshydratation ou pathologie cardiaque.',
     conseils: [
       'Pratiquez la cohérence cardiaque (5 min de respiration rythmée) pour abaisser la FC au repos.',
@@ -44,7 +44,7 @@ export const FICHES = {
 
   'SpO2': {
     emoji: '🫁',
-    couleur: '#5AC8FA',
+    couleur: '#40B896',
     quoi: 'Pourcentage d\'oxygène transporté par vos globules rouges. Mesuré indolore avec un oxymètre de pouls sur le doigt. En dessous de 95 %, une consultation est recommandée.',
     conseils: [
       'En cas de valeur basse, restez au repos et mesurez à nouveau 5 min plus tard.',
@@ -83,7 +83,7 @@ export const FICHES = {
 
   'IMC': {
     emoji: '📊',
-    couleur: '#BF5AF2',
+    couleur: '#1A7C6C',
     quoi: 'Indice de Masse Corporelle = poids (kg) ÷ taille² (m²). Indicateur de corpulence, pas de composition corporelle. Un sportif musclé peut avoir un IMC élevé sans excès de graisse.',
     conseils: [
       'L\'IMC est un indicateur de population, pas un diagnostic individuel.',
@@ -122,7 +122,7 @@ export const FICHES = {
 
   'Créatinine': {
     emoji: '🫘',
-    couleur: '#0A84FF',
+    couleur: '#2E9B83',
     quoi: 'Déchet azoté produit par les muscles et éliminé par les reins. Reflet direct de la fonction rénale. Un taux élevé peut signaler une insuffisance rénale.',
     conseils: [
       'Buvez suffisamment d\'eau (1,5 à 2 L/j) pour aider vos reins à filtrer.',
@@ -138,7 +138,7 @@ export const FICHES = {
 export function getFiche(nomType) {
   return FICHES[nomType] ?? {
     emoji: '📋',
-    couleur: '#8E8E93',
+    couleur: '#7A9490',
     quoi: 'Indicateur de santé suivi dans Sotera.',
     conseils: ['Consultez votre médecin pour l\'interprétation de cette valeur.'],
     facteurs: ['Voir avec votre médecin'],

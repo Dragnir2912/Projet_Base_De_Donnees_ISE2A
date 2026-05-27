@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+﻿import { Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import useAuthStore from './store/authStore'
 import useAlertesStore from './store/alertesStore'
@@ -27,7 +27,7 @@ function LoadingScreen() {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
         <div style={{
           width: 40, height: 40, borderRadius: 12,
-          background: 'linear-gradient(135deg, #0A84FF, #BF5AF2)',
+          background: 'linear-gradient(135deg, #2E9B83, #1A7C6C)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <Leaf size={22} color="white" />

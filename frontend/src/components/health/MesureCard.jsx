@@ -1,19 +1,19 @@
-import { format } from 'date-fns'
+﻿import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import Badge from '../ui/Badge'
 
 const TYPE_COLORS = {
-  'Tension artérielle': '#FF2D55',
-  'Fréquence cardiaque': '#FF375F',
+  'Tension artérielle': '#FF5C6A',
+  'Fréquence cardiaque': '#FF7B73',
   'Glycémie': '#FF9500',
-  'Poids': '#007AFF',
+  'Poids': '#2E9B83',
   'SpO2': '#34C759',
   'Température': '#FFCC00',
-  'Cholestérol': '#AF52DE',
+  'Cholestérol': '#1A7C6C',
 }
 
 export default function MesureCard({ mesure, onClick }) {
-  const color = TYPE_COLORS[mesure.nom_type] || '#007AFF'
+  const color = TYPE_COLORS[mesure.nom_type] || '#2E9B83'
   const dateStr = mesure.date_mesure
     ? format(new Date(mesure.date_mesure), 'd MMM yyyy', { locale: fr })
     : ''
@@ -31,13 +31,13 @@ export default function MesureCard({ mesure, onClick }) {
           {mesure.nom_type?.charAt(0) || '?'}
         </div>
         <div>
-          <p className="font-semibold text-sm text-[#1C1C1E]">{mesure.nom_type}</p>
-          <p className="text-xs text-[#8E8E93] mt-0.5">{dateStr}</p>
+          <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{mesure.nom_type}</p>
+          <p className="text-xs mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{dateStr}</p>
         </div>
       </div>
       <div className="text-right">
-        <p className="font-bold text-lg text-[#1C1C1E]">
-          {mesure.valeur} <span className="text-sm font-normal text-[#8E8E93]">{mesure.unite}</span>
+        <p className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>
+          {mesure.valeur} <span className="text-sm font-normal" style={{ color: 'var(--text-tertiary)' }}>{mesure.unite}</span>
         </p>
         {mesure.statut && <Badge variant={mesure.statut} label={mesure.statut} />}
       </div>

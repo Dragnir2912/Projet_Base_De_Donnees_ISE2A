@@ -1,13 +1,13 @@
-/**
+﻿/**
  * Illustrations SVG santé réutilisables.
  * Toutes animent subtilement au hover ou en boucle.
  */
 
 /* ─── Stéthoscope ─────────────────────────────────────── */
-export function StethoscopeIllustration({ size = 120, color = '#0A84FF' }) {
+export function StethoscopeIllustration({ size = 120, color = '#2E9B83' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none"
-      style={{ filter: 'drop-shadow(0 4px 12px rgba(10,132,255,0.2))' }}>
+      style={{ filter: 'drop-shadow(0 4px 12px rgba(46,155,131,0.2))' }}>
       {/* Fond circulaire */}
       <circle cx="60" cy="60" r="52" fill={`${color}12`} />
       {/* Tête du stéthoscope */}
@@ -27,7 +27,7 @@ export function StethoscopeIllustration({ size = 120, color = '#0A84FF' }) {
 }
 
 /* ─── Cœur ECG ────────────────────────────────────────── */
-export function HeartECGIllustration({ size = 120, color = '#FF2D55', animated = true }) {
+export function HeartECGIllustration({ size = 120, color = '#FF5C6A', animated = true }) {
   return (
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none">
       <circle cx="60" cy="60" r="52" fill={`${color}10`} />
@@ -79,17 +79,17 @@ export function ShieldOkIllustration({ size = 100, color = '#34C759' }) {
 export function AIAssistantIllustration({ size = 120 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none">
-      <circle cx="60" cy="60" r="52" fill="rgba(191,90,242,0.08)" />
+      <circle cx="60" cy="60" r="52" fill="rgba(26,124,108,0.08)" />
       {/* Tête robot arrondie */}
-      <rect x="32" y="36" width="56" height="48" rx="14" fill="rgba(191,90,242,0.15)" stroke="#BF5AF2" strokeWidth="2.5" />
+      <rect x="32" y="36" width="56" height="48" rx="14" fill="rgba(26,124,108,0.15)" stroke="#1A7C6C" strokeWidth="2.5" />
       {/* Antenne */}
-      <line x1="60" y1="20" x2="60" y2="36" stroke="#BF5AF2" strokeWidth="2.5" strokeLinecap="round" />
-      <circle cx="60" cy="18" r="4" fill="#BF5AF2" />
+      <line x1="60" y1="20" x2="60" y2="36" stroke="#1A7C6C" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="60" cy="18" r="4" fill="#1A7C6C" />
       {/* Yeux */}
-      <circle cx="47" cy="56" r="6" fill="#BF5AF2" opacity="0.7">
+      <circle cx="47" cy="56" r="6" fill="#1A7C6C" opacity="0.7">
         <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" />
       </circle>
-      <circle cx="73" cy="56" r="6" fill="#BF5AF2" opacity="0.7">
+      <circle cx="73" cy="56" r="6" fill="#1A7C6C" opacity="0.7">
         <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" />
       </circle>
       {/* Pupilles */}
@@ -97,10 +97,10 @@ export function AIAssistantIllustration({ size = 120 }) {
       <circle cx="73" cy="56" r="2.5" fill="white" />
       {/* Sourire ECG */}
       <path d="M40 70 L48 70 L51 65 L55 75 L59 67 L62 70 L66 70 L69 67 L72 70 L80 70"
-        stroke="#BF5AF2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        stroke="#1A7C6C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       {/* Oreilles */}
-      <rect x="22" y="50" width="10" height="20" rx="5" fill="rgba(191,90,242,0.3)" />
-      <rect x="88" y="50" width="10" height="20" rx="5" fill="rgba(191,90,242,0.3)" />
+      <rect x="22" y="50" width="10" height="20" rx="5" fill="rgba(26,124,108,0.3)" />
+      <rect x="88" y="50" width="10" height="20" rx="5" fill="rgba(26,124,108,0.3)" />
     </svg>
   )
 }
@@ -126,7 +126,7 @@ export function ClipboardIllustration({ size = 100, color = '#FF9500' }) {
 }
 
 /* ─── Médecin / Blouse ────────────────────────────────── */
-export function DoctorIllustration({ size = 120, color = '#0A84FF' }) {
+export function DoctorIllustration({ size = 120, color = '#2E9B83' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none">
       <circle cx="60" cy="60" r="52" fill={`${color}08`} />
@@ -161,9 +161,10 @@ export function EmptyDataIllustration({ size = 90 }) {
       <rect x="52" y="42" width="10" height="33" rx="3" fill="var(--bg-tertiary)" />
       <path d="M15 75 L75 75" stroke="var(--border-medium)" strokeWidth="2" strokeLinecap="round" />
       {/* Point d'interrogation */}
-      <text x="45" y="32" textAnchor="middle" fontSize="20" fill="var(--text-tertiary)" fontFamily="DM Sans, sans-serif">
+      <text x="45" y="32" textAnchor="middle" fontSize="20" fill="var(--text-tertiary)" fontFamily="Inter, sans-serif">
         ?
       </text>
     </svg>
   )
 }
+

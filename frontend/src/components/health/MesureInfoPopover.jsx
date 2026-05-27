@@ -1,3 +1,4 @@
+﻿import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { X, Info, ChevronRight } from 'lucide-react'
 import { getFiche, getStatutValeur } from '../../utils/fichesInfo'
@@ -41,19 +42,21 @@ export default function MesureInfoPopover({ type, derniereValeur, onClose }) {
     danger:    `🚨 Valeur critique. Contactez votre médecin immédiatement.`,
   }
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(6px)' }}
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)' }}
       onClick={onClose}
     >
       <div
-        className="w-full rounded-2xl overflow-hidden flex flex-col"
+        className="w-full rounded-2xl overflow-hidden flex flex-col popover-card-bg"
         style={{
           maxWidth: 360,
           maxHeight: '88vh',
-          background: 'var(--bg-card)',
-          boxShadow: 'var(--shadow-modal)',
+          backdropFilter: 'blur(28px) saturate(1.8)',
+          WebkitBackdropFilter: 'blur(28px) saturate(1.8)',
+          border: '1px solid var(--glass-border)',
+          boxShadow: '0 32px 80px rgba(0,0,0,0.40)',
           overflowY: 'auto',
         }}
         onClick={(e) => e.stopPropagation()}
@@ -61,7 +64,7 @@ export default function MesureInfoPopover({ type, derniereValeur, onClose }) {
         {/* ── En-tête ── */}
         <div
           className="flex items-center gap-3 px-5 py-4"
-          style={{ background: `${fiche.couleur}14`, borderBottom: '1px solid var(--border-subtle)' }}
+          style={{ background: `${fiche.couleur}14`, borderBottom: '1px solid var(--glass-border)' }}
         >
           <div
             className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
@@ -70,13 +73,13 @@ export default function MesureInfoPopover({ type, derniereValeur, onClose }) {
             {fiche.emoji}
           </div>
           <div className="flex-1">
-            <p className="font-bold text-base" style={{ color: 'var(--text-primary)' }}>{type.nom}</p>
-            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Unité : {type.unite}</p>
+            <p className="font-bold text-base" style={{ color: 'var(--ink-1)' }}>{type.nom}</p>
+            <p className="text-xs" style={{ color: 'var(--ink-3)' }}>Unité : {type.unite}</p>
           </div>
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'var(--bg-secondary)', color: 'var(--text-tertiary)', border: 'none', cursor: 'pointer' }}
+            style={{ background: 'var(--surface-2)', color: 'var(--ink-3)', border: 'none', cursor: 'pointer' }}
           >
             <X size={15} />
           </button>
@@ -96,7 +99,7 @@ export default function MesureInfoPopover({ type, derniereValeur, onClose }) {
           {/* ── Zones de référence ── */}
           {(type.seuil_min_normal != null || type.seuil_max_normal != null) && (
             <section>
-              <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text-tertiary)' }}>
+              <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--ink-3)' }}>
                 Zones de référence
               </p>
               <GradientBar type={type} valeur={derniereValeur} />
@@ -106,13 +109,13 @@ export default function MesureInfoPopover({ type, derniereValeur, onClose }) {
           {/* ── Interprétation ── */}
           {derniereValeur != null && statut && (
             <section>
-              <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text-tertiary)' }}>
+              <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--ink-3)' }}>
                 Votre situation
               </p>
               <div
                 className="px-4 py-3 rounded-xl text-sm"
                 style={{
-                  background: statut === 'normal' ? 'rgba(52,199,89,0.1)' : statut === 'attention' ? 'rgba(255,149,0,0.1)' : 'rgba(255,45,85,0.1)',
+                  background: statut === 'normal' ? 'rgba(52,199,89,0.1)' : statut === 'attention' ? 'rgba(255,149,0,0.1)' : 'rgba(255,92,106,0.1)',
                   color: statut === 'normal' ? 'var(--health-green)' : statut === 'attention' ? 'var(--health-orange)' : 'var(--health-red)',
                   fontWeight: 500,
                 }}
@@ -124,22 +127,22 @@ export default function MesureInfoPopover({ type, derniereValeur, onClose }) {
 
           {/* ── C'est quoi ? ── */}
           <section>
-            <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text-tertiary)' }}>
+            <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--ink-3)' }}>
               C'est quoi ?
             </p>
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--ink-2)' }}>
               {fiche.quoi}
             </p>
           </section>
 
           {/* ── Conseils ── */}
           <section>
-            <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text-tertiary)' }}>
+            <p className="text-[10px] font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--ink-3)' }}>
               Conseils pratiques
             </p>
             <ul className="space-y-2">
               {fiche.conseils.map((c, i) => (
-                <li key={i} className="flex gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                <li key={i} className="flex gap-2 text-sm" style={{ color: 'var(--ink-2)' }}>
                   <span style={{ color: fiche.couleur, flexShrink: 0 }}>•</span>
                   {c}
                 </li>
@@ -165,7 +168,8 @@ export default function MesureInfoPopover({ type, derniereValeur, onClose }) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
@@ -212,7 +216,7 @@ function GradientBar({ type, valeur }) {
         {pMaxNormal < 100 && (
           <div
             className="absolute top-0 h-full"
-            style={{ left: `${pMaxNormal}%`, width: `${100 - pMaxNormal}%`, background: '#FF2D55', opacity: 0.6 }}
+            style={{ left: `${pMaxNormal}%`, width: `${100 - pMaxNormal}%`, background: '#FF5C6A', opacity: 0.6 }}
           />
         )}
         {/* Marqueur valeur patient */}
@@ -221,7 +225,7 @@ function GradientBar({ type, valeur }) {
             className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-white"
             style={{
               left: `calc(${markerPct}% - 6px)`,
-              background: 'var(--text-primary)',
+              background: 'var(--ink-1)',
               boxShadow: '0 1px 4px rgba(0,0,0,0.3)',
               zIndex: 2,
             }}
@@ -230,7 +234,7 @@ function GradientBar({ type, valeur }) {
       </div>
 
       {/* Labels bornes */}
-      <div className="flex justify-between text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
+      <div className="flex justify-between text-[10px]" style={{ color: 'var(--ink-3)' }}>
         <span>{min}</span>
         {seuil_min_normal != null && (
           <span style={{ color: 'var(--health-green)' }}>{seuil_min_normal}</span>
@@ -243,8 +247,8 @@ function GradientBar({ type, valeur }) {
 
       {/* Légende */}
       {valeur != null && (
-        <p className="text-[11px] mt-2 text-center" style={{ color: 'var(--text-tertiary)' }}>
-          Votre valeur : <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{valeur} {type.unite}</span>
+        <p className="text-[11px] mt-2 text-center" style={{ color: 'var(--ink-3)' }}>
+          Votre valeur : <span className="font-semibold" style={{ color: 'var(--ink-1)' }}>{valeur} {type.unite}</span>
         </p>
       )}
     </div>
